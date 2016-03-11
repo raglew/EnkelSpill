@@ -1,4 +1,6 @@
 """
+
+
     Tittel: TicTacToe_ForslagJonas.py
     Opprettet: 16:52 - 11.03.2016
     Author: Jonas J. Solsvik
@@ -20,19 +22,19 @@ s = Screen()
 
 # 1. Tegne grid
 def tegne_grid():
-    """ --- Grunnen til at jeg har gjort disse endringene er for at
-          spillet skal kunne skalere riktig i uansett window-size.
+    """ --- Jeg har gjort endringer for at spillet skal 
+          kunne skalere riktig uansett window-size.
            Derfor bruker jeg relative koordinater, istedet for
             absolutte kooordinater.
              Siden det skal være 3 streker i Tic Tac toe så er skjermen
-              delt inn i 3 deler. Hver 1/3 av window height og width
+              delt inn i 3 deler. Hver del er 1/3 av window height og width.
                Jeg har også valgt at grensene rundt kanten på spillet, tilsvarer
                 1/10 av window heigt og width.
                  Derfor må strekene som turtle tegner være 8/10 av win height og width.
                   Dersom en ønsker å gjøre plass på skjermen til andre ting, som f.eks informasjon
-                   om poengsum, så er det lett å gjøre endringer.
-                    F.eks dele opp skjermen i 1/4-deler i stedet. TicTactoe på 3/4 av skjermen, info
-                     på den siste 1/4-delen, osv osv.
+                   om poengsum og navn, så er det lett å gjøre endringer.
+                    F.eks dele opp skjermen i 1/4-deler i stedet, for så å tegneTicTactoe på 3/4 
+                     av skjermen, info på den siste 1/4-delen, osv osv.
      ---------------------------------------------------------- Jonas ------------------------------ """
     # --- Finne window boundries --- different on each machine
     win_width = s.window_width()
@@ -69,7 +71,7 @@ def tegne_grid():
     t.pendown()
     t.forward(8/10*win_width)
 
-tegne_grid()
+
 
 # 2. Spiller 1 plassere
 # 3. Spiller 2 plassere
@@ -77,5 +79,7 @@ tegne_grid()
 
 # Disse funksjonene må være med for at programmet skal fungere.
 
+tegne_grid()
 s.listen()
+
 s.mainloop()
