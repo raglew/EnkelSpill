@@ -12,9 +12,26 @@ import random
 # Init turtle
 t = Turtle()
 s = Screen()
+f = Turtle()                                    # f = figur, for å tegne figur etter spillerens klikk -- raglew
+i = Turtle()                                    # i = instruks, for å endre instruks i hvem_sin_tur funksjon -- raglew
 
 # Init turtle
 t.speed(8)
+t.ht()
+
+# -------------------init figur turtle  ------------  raglew
+f.ht()
+f.speed(0)
+f.shape('circle')                               # sirkel som test
+farge = 'red'                                   # variabel som kan brukes i svitsj_spiller funksjon
+f.color(farge)                                 # rød farge som test
+f.turtlesize(3)
+f.penup()
+
+# -------------------init instruks turtle ------------raglew
+i.ht()
+i.speed(0)
+i.penup()
 
 # --- Finne window boundries --- different on each machine
 win_w = s.window_width()
@@ -84,12 +101,21 @@ def hvem_starter():
              random.randrange(1, 3) henter et tall i listen [1, 2]
               En liste fra 1 til 3, men ikke inkludert 3, der altså.        
     --------------------------------------------------- Jonas ---- """
-    spiller = random.randrange(1, 3)
-    if spiller == 1:
-        print("Spiller 1 starter.")
+
+    # 1. endret variabel 'spiller' til 'player' for å unngå 'shadowing in outer scope'
+    # 2. lagt til variabel neste_player slik at vi kan svitsje mellom spillere
+
+    # ---------------------------------------raglew---------------------------------
+
+    player = random.randrange(1, 3)
+    if player == 1:
+        next_player = 2
+        print("Spiller %s starter." % player)                                           # debug data
     else:
-        print("Spiller 2 starter.")
-    return spiller
+        player = 2
+        next_player = 1
+        print("Spiller %s starter." % player)                                           # debug data
+    return player, next_player
 
 
 def hvem_sin_tur():
@@ -99,23 +125,78 @@ def hvem_sin_tur():
            som spillet uvikler seg. Annenhver gang skal den skrive 
             Spiller 1 og annenhver spiller 2.                   
     -------------------------------------------------- Jonas ----  """
-    t.ht()
-    t.penup()
-    t.color("red")
-    t.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 0.7/10))
-    t.pendown()
-    t.write("Spiller %d sin tur" % spiller, move=False, align="left",
+
+    # endret fra 't' turtle til 'i' turtle for å unngå mulige konflikt     ---- raglew
+
+    # clear før neste 'hvem_sin_tur' skrives ut
+    i.clear()
+    # nyttig å bruke farge til gjeldene spiller :)
+    i.color(farge)
+    i.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 0.7/10))
+    i.pendown()
+    i.write("Spiller %d sin tur" % spiller, move=False, align="left",
             font=("Arial", 15, "bold"))
 
 
 def plassere(x, y):
+    # ------  funksjon for å behandle spillerens klikk og tegne et figur  ----   raglew
+
     print(x, y)                                                                             # debug data
-    # må lage en funksjon som behandle spillerens klikk                                     raglew
+
+    # ---------  trenger en måte å hindre en klikk i en rute som er allerede opptatt ----- raglew
+    # --------   vil også vært fint å plassere 'figuren' i midten av ruten    ---------- raglew
+
+    f.setpos(x, y)
+    f.stamp()
+    s.onclick(None)
+
+    # nå kan spillere svitsjer
+
+    svitsj_spillere()
+
+
+def svitsj_spillere():
+    # --------  funksjon for å svitsje spillere -----------------------  raglew
+
+    # endret funksjon til å bruke globale variabler   ----------  raglew
+    # og for å returnere til plasserings funksjon
+
+    global spiller, neste_spiller, farge
+
+    print('før svitsj i fn', spiller, neste_spiller, f.color())                                       # debug data
+
+    spiller, neste_spiller = neste_spiller, spiller
+
+    # svitsj også figurfarge
+
+    if farge == 'red':
+        farge = 'green'
+        f.color(farge)
+    elif farge == 'green':
+        farge = 'red'
+        f.color(farge)
+    else:
+        print('farge error')
+
+    print('etter svitsj i fn', spiller, neste_spiller, f.color())                                      # debug data
+
+    # den svisjet spilleren kan nå plassere
+
+    hvem_sin_tur()
+
+    s.onclick(plassere)
+
+
 
 # Init graphics and logics
 tegne_grid()
 tegne_rutenummer()
-spiller = hvem_starter()
+
+# -------- endret for å hent både spiller og neste spiller ---- raglew
+
+spiller, neste_spiller = hvem_starter()
+
+print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
 
 # Main game
 hvem_sin_tur()
@@ -123,12 +204,6 @@ hvem_sin_tur()
 # 2. Spiller 1 plassere
 
 s.onclick(plassere)
-
-# 3. Veksler spillere
-
-# 3. Spiller 2 plassere
-
-# 4. Inn til en av spillene winner
 
 
 s.mainloop()
