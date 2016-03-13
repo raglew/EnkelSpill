@@ -43,6 +43,19 @@ min_x = win_w/2 * (-1)
 max_y = win_h/2
 min_y = win_h/2 * (-1)
 
+# --- Koordinatene til midtpunktet i hver rute ---
+""" Brukes til å bestemme plassering av figurer som skal 
+     tegnes etter hvert tastetrykk 1 - 9 """
+midtirute = {   1 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
+                2 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
+                3 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
+                4 : [min_x + (3/10*win_w), min_y + (5/10*win_h)],
+                5 : [min_x + (5/10*win_w), min_y + (5/10*win_h)],
+                6 : [min_x + (7/10*win_w), min_y + (5/10*win_h)],
+                7 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
+                8 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
+                9 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
+
 
 # 1. Tegne grid
 def tegne_grid():
@@ -118,7 +131,7 @@ def hvem_starter():
     return player, next_player
 
 
-def hvem_sin_tur():
+def hvem_sin_tur(player):
     """ Denne funksjonen skriver en tekst oppe i venstre 
          hjørnet av spillet, som viser hvem sin tur det er. 
           Håpet er at denne skal oppdatere seg selv, etterhvert 
@@ -134,25 +147,8 @@ def hvem_sin_tur():
     i.color(farge)
     i.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 0.7/10))
     i.pendown()
-    i.write("Spiller %d sin tur" % spiller, move=False, align="left",
+    i.write("Spiller %d sin tur" % player, move=False, align="left",
             font=("Arial", 15, "bold"))
-
-
-def plassere(x, y):
-    # ------  funksjon for å behandle spillerens klikk og tegne et figur  ----   raglew
-
-    print(x, y)                                                                             # debug data
-
-    # ---------  trenger en måte å hindre en klikk i en rute som er allerede opptatt ----- raglew
-    # --------   vil også vært fint å plassere 'figuren' i midten av ruten    ---------- raglew
-
-    f.setpos(x, y)
-    f.stamp()
-    s.onclick(None)
-
-    # nå kan spillere svitsjer
-
-    svitsj_spillere()
 
 
 def svitsj_spillere():
@@ -182,10 +178,79 @@ def svitsj_spillere():
 
     # den svisjet spilleren kan nå plassere
 
-    hvem_sin_tur()
+    hvem_sin_tur(spiller)
 
     s.onclick(plassere)
 
+
+def plassere(x, y):
+    # ------  funksjon for å behandle spillerens klikk og tegne et figur  ----   raglew
+
+    print(x, y)                                                                             # debug data
+
+    # ---------  trenger en måte å hindre en klikk i en rute som er allerede opptatt ----- raglew
+    # --------   vil også vært fint å plassere 'figuren' i midten av ruten    ---------- raglew
+
+    f.setpos(x, y)
+    f.stamp()
+    s.onclick(None)
+
+    # nå kan spillere svitsjer
+
+    svitsj_spillere()
+
+
+def tegn_stamp(rute):
+	""" Denne funksjonen velger posisjon utifra Dict-->midtirute
+		 som er definert i starten av programmet. 
+		  rute er en variabel mellom 1 og 9, alt etter hvilken
+		   tast spilleren trykker på.
+    -------------------------------------------- Jonas ----- """
+	rute_x, rute_y = midtirute[rute]
+	if spiller == 1:
+	    f.setpos(rute_x, rute_y)
+	    f.stamp()
+	    svitsj_spillere()
+	elif spiller == 2:
+	    f.setpos(rute_x, rute_y)
+	    f.stamp()
+	    svitsj_spillere()
+
+
+def tegn_stamp1():
+    tegn_stamp(1)
+
+
+def tegn_stamp2():
+    tegn_stamp(2)
+
+
+def tegn_stamp3():
+    tegn_stamp(3)
+
+
+def tegn_stamp4():
+    tegn_stamp(4)
+
+
+def tegn_stamp5():
+    tegn_stamp(5)
+
+
+def tegn_stamp6():
+    tegn_stamp(6)
+
+
+def tegn_stamp7():
+    tegn_stamp(7)
+
+
+def tegn_stamp8():
+    tegn_stamp(8)
+
+
+def tegn_stamp9():  
+    tegn_stamp(9)
 
 
 # Init graphics and logics
@@ -193,17 +258,27 @@ tegne_grid()
 tegne_rutenummer()
 
 # -------- endret for å hent både spiller og neste spiller ---- raglew
-
 spiller, neste_spiller = hvem_starter()
-
 print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
+hvem_sin_tur(spiller)
 
-# Main game
-hvem_sin_tur()
 
-# 2. Spiller 1 plassere
+# --- Main game ----
 
+# Spilleren plasserer sirkel i rute
+# --- Metode 1: Spilleren plasserer sirkel med museklikk ---
 s.onclick(plassere)
+# --- Metode 2: Eller spilleren kan plassere med tastetrykk ----
+s.onkey(tegn_stamp1, ("1")) 
+s.onkey(tegn_stamp2, ("2"))
+s.onkey(tegn_stamp3, ("3"))
+s.onkey(tegn_stamp4, ("4"))
+s.onkey(tegn_stamp5, ("5"))
+s.onkey(tegn_stamp6, ("6"))
+s.onkey(tegn_stamp7, ("7"))
+s.onkey(tegn_stamp8, ("8"))
+s.onkey(tegn_stamp9, ("9"))
+s.listen()
 
 
 s.mainloop()
