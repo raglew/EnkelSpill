@@ -59,7 +59,13 @@ else:
     print("Spiller 2 starter.")
 
 # random.randrange(a,b) og random.randint(a,b) gir alltid resultatet 1 til variabel "spiller". Hvorfor den gjør det er usikkert. 
-
+# Det er fordi: range(1, 2) --> range = [1]      Fra 1 til 2 men ikke inkludert 2
+#               range(2)    --> range = [0, 1]    
+#               range(1)    --> range = [0]
+#               range(0, 2) --> range = [0, 1]
+#               range(1, 3) --> range = [1, 2]   Denne er den riktige
+#               range(3)    --> range = [0, 1, 2]
+#               range(0, 3) --> range = [0, 1, 2]  Tallet her betyr "fra 0 til 3, men ikke inkludert 3."
 """
 Under denne kommentaren tenker jeg vi kunne lage en liste der vi setter X og Y koordinatene til senter av kvadratene.
 Grunnet for dette er for la brukeren skrive ned hvilke kvadrat som skal bli merket med enten kryss eller sirkel slik at den kvadraten er tatt.
