@@ -32,28 +32,28 @@ def tegne_grid():
 
     # --- Tegner TicTacToe-streker med relative koordinater ---
     t.penup()
-    t.setpos(min_x + (2/3*win_w), max_y - (1/10*win_h))
+    t.setpos(min_x + (3/5*win_w), max_y - (1/5*win_h))
     t.setheading(270)
     t.pendown()
-    t.forward(8/10*win_h)
+    t.forward(3/5*win_h)
 
     t.penup()
-    t.setpos(max_x - (1/10*win_w), min_y + (1/3*win_h))
+    t.setpos(max_x - (1/5*win_w), min_y + (2/5*win_h))
     t.setheading(180)
     t.pendown()
-    t.forward(8/10*win_w)
+    t.forward(3/5*win_w)
 
     t.penup()
-    t.setpos(min_x + (1/3*win_w), max_y - (1/10*win_h))
+    t.setpos(min_x + (2/5*win_w), max_y - (1/5*win_h))
     t.setheading(270)
     t.pendown()
-    t.forward(8/10*win_h)
+    t.forward(3/5*win_h)
 
     t.penup()
-    t.setpos(min_x + (1/10*win_w), min_y + (2/3*win_h))
+    t.setpos(min_x + (1/5*win_w), min_y + (3/5*win_h))
     t.setheading(0)
     t.pendown()
-    t.forward(8/10*win_w)
+    t.forward(3/5*win_w)
 
 
 def tegne_rutenummer():
@@ -68,8 +68,8 @@ def tegne_rutenummer():
     t.penup()
     for i in range(3):    
         for k in range(3):
-            t.goto(min_x + (win_w*1/10) + (win_w*1/3*k),
-                   max_y - (win_h*1/10) - (win_h*1/3*i))
+            t.goto(min_x + (win_w*1.1/5) + (win_w*1/5*k),
+                   max_y - (win_h*1.1/5) - (win_h*1/5*i))
             t.color("blue")
             t.write(liste[liste_counter], move=False, align="center",
                     font=("Arial", 6, "bold"))

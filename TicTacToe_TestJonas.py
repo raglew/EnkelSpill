@@ -14,10 +14,16 @@ import random
 
 # Init turtle
 t = Turtle()
+t2 = Turtle()
 s = Screen()
 
 # Init turtle
 t.speed(8)
+
+# Init turtle 2
+t2.speed(5)
+t2.ht()
+t2.width(3)
 
 # --- Finne window boundries --- different on each machine
 win_w = s.window_width()
@@ -29,6 +35,18 @@ min_x = win_w/2 * (-1)
 max_y = win_h/2
 min_y = win_h/2 * (-1)
 
+# --- Koordinatene til midtpunktet i hver rute ---
+midtirute = { 
+                1 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
+                2 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
+                3 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
+                4 : [min_x + (3/10*win_w), min_y + (5/10*win_h)],
+                5 : [min_x + (5/10*win_w), min_y + (5/10*win_h)],
+                6 : [min_x + (7/10*win_w), min_y + (5/10*win_h)],
+                7 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
+                8 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
+                9 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]
+            }
 
 # 1. Tegne grid
 def tegne_grid():
@@ -49,28 +67,28 @@ def tegne_grid():
 
     # --- Tegner TicTacToe-streker med relative koordinater ---
     t.penup()
-    t.setpos(min_x + (2/3*win_w), max_y - (1/10*win_h))
+    t.setpos(min_x + (3/5*win_w), max_y - (1/5*win_h))
     t.setheading(270)
     t.pendown()
-    t.forward(8/10*win_h)
+    t.forward(3/5*win_h)
 
     t.penup()
-    t.setpos(max_x - (1/10*win_w), min_y + (1/3*win_h))
+    t.setpos(max_x - (1/5*win_w), min_y + (2/5*win_h))
     t.setheading(180)
     t.pendown()
-    t.forward(8/10*win_w)
+    t.forward(3/5*win_w)
 
     t.penup()
-    t.setpos(min_x + (1/3*win_w), max_y - (1/10*win_h))
+    t.setpos(min_x + (2/5*win_w), max_y - (1/5*win_h))
     t.setheading(270)
     t.pendown()
-    t.forward(8/10*win_h)
+    t.forward(3/5*win_h)
 
     t.penup()
-    t.setpos(min_x + (1/10*win_w), min_y + (2/3*win_h))
+    t.setpos(min_x + (1/5*win_w), min_y + (3/5*win_h))
     t.setheading(0)
     t.pendown()
-    t.forward(8/10*win_w)
+    t.forward(3/5*win_w)
 
 
 def tegne_rutenummer():
@@ -85,8 +103,8 @@ def tegne_rutenummer():
     t.penup()
     for i in range(3):    
         for k in range(3):
-            t.goto(min_x + (win_w*1/10) + (win_w*1/3*k),
-                   max_y - (win_h*1/10) - (win_h*1/3*i))
+            t.goto(min_x + (win_w*1.1/5) + (win_w*1/5*k),
+                   max_y - (win_h*1.1/5) - (win_h*1/5*i))
             t.color("blue")
             t.write(liste[liste_counter], move=False, align="center",
                     font=("Arial", 6, "bold"))
@@ -125,12 +143,43 @@ def hvem_sin_tur():
             font=("Arial", 15, "bold"))
 
 
+def tegn_kryss(x, y):
+    t2.st()
+    t2.penup()
+    t2.goto(x, y)
+    t2.seth(45)
+    t2.pendown()
+    t2.forward(50)
+    t2.backward(100)
+    t2.forward(50)
+    t2.right(90)
+    t2.forward(50)
+    t2.backward(100)
+    t2.forward(50)
+    t2.ht()
+
+
+def tegn_sirkel(x, y):
+    t2.st()
+    t2.penup()
+    t2.goto(x, y)
+    t2.seth(180)
+    t2.forward(50)
+    t2.seth(90)
+    t2.pendown()
+    t2.circle(50)
+    t2.ht()
+
+
 # Init graphics and logics
 tegne_grid()
 tegne_rutenummer()
 spiller = hvem_starter()
 
-# Main game
+# --- Main game ----
+
+
+
 hvem_sin_tur()
 
 s.mainloop()
@@ -145,12 +194,9 @@ s.mainloop()
 
 """
     Session 
-    15:25 - 16:34
-
-    endringer: 
-      - Endret "win_height" og "win_width" til "win_h" og "win_w"
-      - Flyttet alle variabler som har med window-size å gjøre ut av 
-      funksjonen tegne_grid. Slik at de kan brukes i andre funksjoner.
-      - Lagt til funksjonene hvem_sin_tur(), hvem_starter() og tegn_rutenummer()
+    22:05
+    - Lagt til tegn_kryss(), tegn_sirkel
+    - Lagt til midtrute = {} med koordinatene til midtpunktet i alle rutene.
+    - Endret inndelingen av vinduet fra 1/3-deler til 1/5 deler.
 
 """
