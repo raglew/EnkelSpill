@@ -8,12 +8,14 @@
 
 from turtle import *
 import random
+import time
 
 # Init turtle
 t = Turtle()
 s = Screen()
-f = Turtle()                                    # f = figur, for å tegne figur etter spillerens klikk -- raglew
-i = Turtle()                                    # i = instruks, for å endre instruks i hvem_sin_tur funksjon -- raglew
+f = Turtle()                     # f = figur, for å tegne figur etter spillerens klikk -- raglew
+i = Turtle()                     # i = instruks, for å endre instruks i hvem_sin_tur funksjon -- raglew
+w = Turtle()                     # w = warning, skriver warning dersom en rute er opptatt --Jonas 
 
 # Init turtle
 t.speed(8)
@@ -32,6 +34,13 @@ f.penup()
 i.ht()
 i.speed(0)
 i.penup()
+i.shape('circle')
+i.turtlesize(3)
+
+# ---------------Init warning turtle -------------Jonas
+w.ht()
+w.speed(0)
+w.color("Orange")
 
 # --- Finne window boundries --- different on each machine
 win_w = s.window_width()
@@ -45,7 +54,7 @@ min_y = win_h/2 * (-1)
 
 # --- Koordinatene til midtpunktet i hver rute ---
 """ Brukes til å bestemme plassering av figurer som skal 
-     tegnes etter hvert tastetrykk 1 - 9 """
+     tegnes etter hvert tastetrykk 1 - 9, og museklikk """
 midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
                 8 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
                 9 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
@@ -55,6 +64,9 @@ midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
                 1 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
                 2 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
                 3 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
+
+# --- Denne listen lagrer ruter som er opptatt ---
+opptatt_rute = []
 
 
 # 1. Tegne grid
@@ -145,10 +157,12 @@ def hvem_sin_tur(player):
     i.clear()
     # nyttig å bruke farge til gjeldene spiller :)
     i.color(farge)
-    i.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 0.7/10))
-    i.pendown()
+    i.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 1.2/10))
     i.write("Spiller %d sin tur" % player, move=False, align="left",
-            font=("Arial", 15, "bold"))
+            font=("Arial", 20, "bold"))
+    # - Added big circle in right corner
+    i.goto(max_x - (win_w * 1/10), max_y - (win_h * 1/10))
+    i.stamp()
 
 
 def svitsj_spillere():
@@ -206,7 +220,15 @@ def tegn_stamp(rute):
 	      starten av programmet, og bruker så denne posisjonen til 
 	       å tegne en sirkel i midten av ruten som er bestemt.
 	        Til slutt så startes svitsj_spillere().
+	        Update: Dersom ruten allerede er brukt, så vil funksjonen
+	         nekte å skrive noe, og starte tegn_opptatt().
     -------------------------------------------- Jonas ----- """
+	global opptatt_rute
+	if rute in opptatt_rute:               # Skjekker om ruten allerede er tatt
+		print("Ruten er allrede opptatt!")
+		tegn_opptatt(rute)
+		return 0
+	opptatt_rute.append(rute)              # Lagrer hvilke ruter som er opptatt.
 	rute_x, rute_y = midtirute[rute]
 	if spiller == 1:
 	    f.setpos(rute_x, rute_y)
@@ -216,6 +238,14 @@ def tegn_stamp(rute):
 	    f.setpos(rute_x, rute_y)
 	    f.stamp()
 	    svitsj_spillere()
+
+
+def tegn_opptatt(rute):
+	w.setpos(0, 0)
+	w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center", 
+		    font=("Arial", 40, "bold"))
+	time.sleep(1.5)
+	w.clear()
 
 
 def tegn_stamp1():
@@ -254,19 +284,17 @@ def tegn_stamp9():
     tegn_stamp(9)
 
 
-# Init graphics and logics
+
+# --- Init graphics ---
 tegne_grid()
 tegne_rutenummer()
 
-# -------- endret for å hent både spiller og neste spiller ---- raglew
+# --- Init logics ---
 spiller, neste_spiller = hvem_starter()
 print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
 hvem_sin_tur(spiller)
 
-
-# --- Main game ----
-
-# Spilleren plasserer sirkel i rute
+# ---------- Plassering av sirkel i en bestemt rute --------
 # --- Metode 1: Spilleren plasserer sirkel med museklikk ---
 s.onclick(plasser_stamp)
 # --- Metode 2: Eller spilleren kan plassere med tastetrykk ----
@@ -281,5 +309,13 @@ s.onkey(tegn_stamp8, ("8"))
 s.onkey(tegn_stamp9, ("9"))
 s.listen()
 
+"""
+    Det som mangler er: 
+    1.  Logikken for å kåre en vinner.
+    2.  Grafikken for å vise hvem som vinner.
+    3.  En måte å kunne starte spillet på nytt.
+    4.  (Optional) Gjøre det mulig å skrive inn sitt eget navn,
+       istedet for å player 1 og player 2.
+"""
 
 s.mainloop()
