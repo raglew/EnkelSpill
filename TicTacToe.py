@@ -46,15 +46,15 @@ min_y = win_h/2 * (-1)
 # --- Koordinatene til midtpunktet i hver rute ---
 """ Brukes til å bestemme plassering av figurer som skal 
      tegnes etter hvert tastetrykk 1 - 9 """
-midtirute = {   1 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
-                2 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
-                3 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
+midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
+                8 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
+                9 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
                 4 : [min_x + (3/10*win_w), min_y + (5/10*win_h)],
                 5 : [min_x + (5/10*win_w), min_y + (5/10*win_h)],
                 6 : [min_x + (7/10*win_w), min_y + (5/10*win_h)],
-                7 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
-                8 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
-                9 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
+                1 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
+                2 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
+                3 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
 
 
 # 1. Tegne grid
@@ -93,7 +93,7 @@ def tegne_rutenummer():
            bestemte ruten.
     --------------------------------------- Jonas ----- """    
     # Først en liste med tall fra 1, 9
-    liste = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    liste = [7, 8, 9, 4, 5, 6, 1, 2, 3]
     liste_counter = 0
     t.penup()
     for i in range(3):    
