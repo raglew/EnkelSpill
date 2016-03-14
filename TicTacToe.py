@@ -42,19 +42,18 @@ w.ht()
 w.speed(0)
 w.color("Orange")
 
-# --- Finne window boundries --- different on each machine
+# --- Finne window boundries --- different on each machine ---
 win_w = s.window_width()
 win_h = s.window_height()
 
-# --- Sette grensene for koordinatsystemet
+# --- Sette grensene for koordinatsystemet ---
 max_x = win_w/2
 min_x = win_w/2 * (-1)
 max_y = win_h/2
 min_y = win_h/2 * (-1)
 
-# --- Koordinatene til midtpunktet i hver rute ---
-""" Brukes til å bestemme plassering av figurer som skal 
-     tegnes etter hvert tastetrykk 1 - 9, og museklikk """
+# --- Koordinatene til midtpunktet i hver rute --- Jonas
+# --- Brukes til å plassere f.stamp() i midten av rutene ---
 midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
                 8 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
                 9 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
@@ -65,7 +64,7 @@ midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
                 2 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
                 3 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
 
-# --- Denne listen lagrer ruter som er opptatt ---
+# --- Denne listen lagrer ruter som er opptatt --- Jonas
 opptatt_rute = []
 
 
@@ -135,11 +134,11 @@ def hvem_starter():
     player = random.randrange(1, 3)
     if player == 1:
         next_player = 2
-        print("Spiller %s starter." % player)                                           # debug data
+        print("Spiller %s starter." % player)                               # debug data
     else:
         player = 2
         next_player = 1
-        print("Spiller %s starter." % player)                                           # debug data
+        print("Spiller %s starter." % player)                               # debug data
     return player, next_player
 
 
@@ -172,13 +171,10 @@ def svitsj_spillere():
     # og for å returnere til plasserings funksjon
 
     global spiller, neste_spiller, farge
-
-    print('før svitsj i fn', spiller, neste_spiller, f.color())                                       # debug data
-
+    print('før svitsj i fn', spiller, neste_spiller, f.color())         # debug data
     spiller, neste_spiller = neste_spiller, spiller
 
     # svitsj også figurfarge
-
     if farge == 'red':
         farge = 'green'
         f.color(farge)
@@ -188,56 +184,51 @@ def svitsj_spillere():
     else:
         print('farge error')
 
-    print('etter svitsj i fn', spiller, neste_spiller, f.color())                                      # debug data
+    print('etter svitsj i fn', spiller, neste_spiller, f.color())       # debug data
 
     # den svisjet spilleren kan nå plassere
-
     hvem_sin_tur(spiller)
 
 
-def plasser_stamp(x, y):
+def plasser_stamp_onclick(x, y):
     """ Opprinnelig plassere() av raglew, modifisert av Jonas. 
          Denne funksjonen får posisjon fra et museklikk. 
-          Den bruker posisjon til museklikket, og posisjonene
-           i Dict-midtirute, til å finne ut hvilken rute som er 
-            nermest museklikket. Variabelen "d" skjekker avstanden
-             til alle rutene vha. en for-løkke. Når "d" er liten nok,
-              så startes tegn_stamp() i ruten, og løkken brytes.
-    ------------------------------------------ Raglew, Jonas ---- """
-    print(x, y)                                                     # debug data
-    for i in range(9):
-        rute_x, rute_y = midtirute[i+1]
+          Så skjekkes differensen til midten av alle rutene, vha.
+           "midtirute = {" og en for-løkke. Differansen lagres i 
+             variabelen d, for hver løkke. Når "d" er liten nok, så 
+       startes tegn_stamp() i den korresponderende ruten, og løkken brytes.
+    ------------------------------------------ Raglew, Jonas --------- """
+    print(x, y)                                             # debug data
+    for i in range(1,10):
+        midt_x, midt_y = midtirute[i]
 
-        d = ((((rute_x - x)**2) + ((rute_y - y)**2))**0.5)
-        if d < 50:                                             # Treshhold < 50
-            tegn_stamp(i+1)
+        # h = sqrt((x1-x2)^2 + (y1 - y2)^2)  Ref: Pytagoras
+        d = ((((midt_x - x)**2) + ((midt_y - y)**2))**0.5) 
+        if d < 50:                                      # Treshhold < 50
+            tegn_stamp(i)                               # i = rutenummer
             break
 
 
 def tegn_stamp(rute):
 	""" Funksjonen får data om hvilken rute det skal tegnes i, og 
-	     henter posisjon utifra Dict-->midtirute som er definert i
-	      starten av programmet, og bruker så denne posisjonen til 
-	       å tegne en sirkel i midten av ruten som er bestemt.
-	        Til slutt så startes svitsj_spillere().
+	     henter posisjonen til midten av ruten utifra "midtirute = {", 
+	      som er definert i starten av programmet. Posisjon settes og
+	       det f.stamp()-es. Til slutt så startes svitsj_spillere().
 	        Update: Dersom ruten allerede er brukt, så vil funksjonen
 	         nekte å skrive noe, og starte tegn_opptatt().
     -------------------------------------------- Jonas ----- """
 	global opptatt_rute
-	if rute in opptatt_rute:               # Skjekker om ruten allerede er tatt
+	if rute in opptatt_rute:                   # "Er ruten opptatt ?"
 		print("Ruten er allrede opptatt!")
 		tegn_opptatt(rute)
 		return 0
-	opptatt_rute.append(rute)              # Lagrer hvilke ruter som er opptatt.
-	rute_x, rute_y = midtirute[rute]
-	if spiller == 1:
-	    f.setpos(rute_x, rute_y)
-	    f.stamp()
-	    svitsj_spillere()
-	elif spiller == 2:
-	    f.setpos(rute_x, rute_y)
-	    f.stamp()
-	    svitsj_spillere()
+	else:
+		opptatt_rute.append(rute)              # "Denne ruten er nå opptatt"
+		midt_x, midt_y = midtirute[rute]
+		
+		f.setpos(midt_x, midt_y)
+		f.stamp()
+		svitsj_spillere()
 
 
 def tegn_opptatt(rute):
@@ -294,10 +285,10 @@ spiller, neste_spiller = hvem_starter()
 print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
 hvem_sin_tur(spiller)
 
-# ---------- Plassering av sirkel i en bestemt rute --------
-# --- Metode 1: Spilleren plasserer sirkel med museklikk ---
-s.onclick(plasser_stamp)
-# --- Metode 2: Eller spilleren kan plassere med tastetrykk ----
+# ---------- Plassering av f.stamp() i en bestemt rute --------
+# --- Metode 1: Spilleren plasserer f.stamp() med museklikk ---
+s.onclick(plasser_stamp_onclick)
+# --- Metode 2: Eller spilleren f.stamp()-er med tastetrykk ----
 s.onkey(tegn_stamp1, ("1")) 
 s.onkey(tegn_stamp2, ("2"))
 s.onkey(tegn_stamp3, ("3"))
