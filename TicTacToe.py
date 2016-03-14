@@ -180,31 +180,32 @@ def svitsj_spillere():
 
     hvem_sin_tur(spiller)
 
-    s.onclick(plassere)
 
+def plasser_stamp(x, y):
+    """ Opprinnelig plassere() av raglew, modifisert av Jonas. 
+         Denne funksjonen får posisjon fra et museklikk. 
+          Den bruker posisjon til museklikket, og posisjonene
+           i Dict-midtirute, til å finne ut hvilken rute som er 
+            nermest museklikket. Variabelen "d" skjekker avstanden
+             til alle rutene vha. en for-løkke. Når "d" er liten nok,
+              så startes tegn_stamp() i ruten, og løkken brytes.
+    ------------------------------------------ Raglew, Jonas ---- """
+    print(x, y)                                                     # debug data
+    for i in range(9):
+        rute_x, rute_y = midtirute[i+1]
 
-def plassere(x, y):
-    # ------  funksjon for å behandle spillerens klikk og tegne et figur  ----   raglew
-
-    print(x, y)                                                                             # debug data
-
-    # ---------  trenger en måte å hindre en klikk i en rute som er allerede opptatt ----- raglew
-    # --------   vil også vært fint å plassere 'figuren' i midten av ruten    ---------- raglew
-
-    f.setpos(x, y)
-    f.stamp()
-    s.onclick(None)
-
-    # nå kan spillere svitsjer
-
-    svitsj_spillere()
+        d = ((((rute_x - x)**2) + ((rute_y - y)**2))**0.5)
+        if d < 50:                                             # Treshhold < 50
+            tegn_stamp(i+1)
+            break
 
 
 def tegn_stamp(rute):
-	""" Denne funksjonen velger posisjon utifra Dict-->midtirute
-		 som er definert i starten av programmet. 
-		  rute er en variabel mellom 1 og 9, alt etter hvilken
-		   tast spilleren trykker på.
+	""" Funksjonen får data om hvilken rute det skal tegnes i, og 
+	     henter posisjon utifra Dict-->midtirute som er definert i
+	      starten av programmet, og bruker så denne posisjonen til 
+	       å tegne en sirkel i midten av ruten som er bestemt.
+	        Til slutt så startes svitsj_spillere().
     -------------------------------------------- Jonas ----- """
 	rute_x, rute_y = midtirute[rute]
 	if spiller == 1:
@@ -267,7 +268,7 @@ hvem_sin_tur(spiller)
 
 # Spilleren plasserer sirkel i rute
 # --- Metode 1: Spilleren plasserer sirkel med museklikk ---
-s.onclick(plassere)
+s.onclick(plasser_stamp)
 # --- Metode 2: Eller spilleren kan plassere med tastetrykk ----
 s.onkey(tegn_stamp1, ("1")) 
 s.onkey(tegn_stamp2, ("2"))

@@ -1,21 +1,19 @@
-"""
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-    Tittel: TicTacToe_ForslagJonas.py
-    Opprettet: 16:52 - 11.03.2016
-    Author: Jonas J. Solsvik
-    Beskrivelse: Dette er en tekstfil, hvor jeg tester ut endringsforslag til 
-                  Jeg kommer til å merge sammen med hovedfil, når jeg føler at 
-                   det passe seg. No worries.
-    ------------------------------------------------ Takk, Jonas ------------- """
+# -------------------  Tic Tac Toe med 2 spillere
 
-from turtle import *    # --- endret Jonas
+# -------------------  Authors: EmilZach, Arxcis, raglew
+
+
+from turtle import *
 import random
 
 # Init turtle
 t = Turtle()
-f = Turtle()
 s = Screen()
-i = Turtle()
+f = Turtle()                                    # f = figur, for å tegne figur etter spillerens klikk -- raglew
+i = Turtle()                                    # i = instruks, for å endre instruks i hvem_sin_tur funksjon -- raglew
 
 # Init turtle
 t.speed(8)
@@ -48,8 +46,7 @@ min_y = win_h/2 * (-1)
 # --- Koordinatene til midtpunktet i hver rute ---
 """ Brukes til å bestemme plassering av figurer som skal 
      tegnes etter hvert tastetrykk 1 - 9 """
-midtirute = { 
-                1 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
+midtirute = {   1 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
                 2 : [min_x + (5/10*win_w), min_y + (7/10*win_h)],
                 3 : [min_x + (7/10*win_w), min_y + (7/10*win_h)],
                 4 : [min_x + (3/10*win_w), min_y + (5/10*win_h)],
@@ -57,25 +54,11 @@ midtirute = {
                 6 : [min_x + (7/10*win_w), min_y + (5/10*win_h)],
                 7 : [min_x + (3/10*win_w), min_y + (3/10*win_h)],
                 8 : [min_x + (5/10*win_w), min_y + (3/10*win_h)],
-                9 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]
-            }
+                9 : [min_x + (7/10*win_w), min_y + (3/10*win_h)]   }
+
 
 # 1. Tegne grid
 def tegne_grid():
-    """  Jeg har gjort endringer for at spillet skal 
-          kunne skalere riktig uansett window-size.
-           Derfor bruker jeg relative koordinater, istedet for
-            absolutte kooordinater.
-             Siden det skal være 3 streker i Tic Tac toe så er skjermen
-              delt inn i 3 deler. Hver del er 1/3 av window height og width.
-               Jeg har også valgt at grensene rundt kanten på spillet, tilsvarer
-                1/10 av window heigt og width.
-                 Derfor må strekene som turtle tegner være 8/10 av win height og width.
-                  Dersom en ønsker å gjøre plass på skjermen til andre ting, som f.eks informasjon
-                   om poengsum og navn, så er det lett å gjøre endringer.
-                    F.eks dele opp skjermen i 1/4-deler i stedet, for så å tegneTicTactoe på 3/4 
-                     av skjermen, info på den siste 1/4-delen, osv osv.
-     ---------------------------------------------------------- Jonas ------------------------------ """
 
     # --- Tegner TicTacToe-streker med relative koordinater ---
     t.penup()
@@ -155,6 +138,7 @@ def hvem_sin_tur(player):
            som spillet uvikler seg. Annenhver gang skal den skrive 
             Spiller 1 og annenhver spiller 2.                   
     -------------------------------------------------- Jonas ----  """
+
     # endret fra 't' turtle til 'i' turtle for å unngå mulige konflikt     ---- raglew
 
     # clear før neste 'hvem_sin_tur' skrives ut
@@ -166,6 +150,71 @@ def hvem_sin_tur(player):
     i.write("Spiller %d sin tur" % player, move=False, align="left",
             font=("Arial", 15, "bold"))
 
+
+def svitsj_spillere():
+    # --------  funksjon for å svitsje spillere -----------------------  raglew
+
+    # endret funksjon til å bruke globale variabler   ----------  raglew
+    # og for å returnere til plasserings funksjon
+
+    global spiller, neste_spiller, farge
+
+    print('før svitsj i fn', spiller, neste_spiller, f.color())                                       # debug data
+
+    spiller, neste_spiller = neste_spiller, spiller
+
+    # svitsj også figurfarge
+
+    if farge == 'red':
+        farge = 'green'
+        f.color(farge)
+    elif farge == 'green':
+        farge = 'red'
+        f.color(farge)
+    else:
+        print('farge error')
+
+    print('etter svitsj i fn', spiller, neste_spiller, f.color())                                      # debug data
+
+    # den svisjet spilleren kan nå plassere
+
+    hvem_sin_tur(spiller)
+
+
+def plasser_stamp(x, y):
+    """ Opprinnelig plassere() av raglew, modifisert av Jonas. 
+         Denne funksjonen får posisjon fra et museklikk. 
+          Den bruker posisjon til museklikket, og posisjonene
+           i Dict-midtirute, til å finne ut hvilken rute som er 
+            nermest museklikket. Variabelen "d" skjekker avstanden
+             til alle rutene vha. en for-løkke. Når "d" er liten nok,
+              så startes tegn_stamp() i ruten, og løkken brytes.
+    ------------------------------------------ Raglew, Jonas ---- """
+    print(x, y)                                                     # debug data
+    for i in range(9):
+    	rute_x, rute_y = midtirute[i+1]
+
+    	d = ((((rute_x - x)**2) + ((rute_y - y)**2))**0.5)
+		if d < 50:                                             # Treshhold = 50
+    		tegn_stamp(i+1)
+    		break
+
+
+def tegn_stamp(rute):
+	""" Denne funksjonen velger posisjon utifra Dict-->midtirute
+		 som er definert i starten av programmet. 
+		  rute er en variabel mellom 1 og 9, alt etter hvilken
+		   tast spilleren trykker på.
+    -------------------------------------------- Jonas ----- """
+	rute_x, rute_y = midtirute[rute]
+	if spiller == 1:
+	    f.setpos(rute_x, rute_y)
+	    f.stamp()
+	    svitsj_spillere()
+	elif spiller == 2:
+	    f.setpos(rute_x, rute_y)
+	    f.stamp()
+	    svitsj_spillere()
 
 
 def tegn_stamp1():
@@ -204,32 +253,22 @@ def tegn_stamp9():
     tegn_stamp(9)
 
 
-def tegn_stamp(rute):
-    global spiller
-    rute_x, rute_y = midtirute[rute]
-    if spiller == 1:
-        f.color("red")
-        f.setpos(rute_x, rute_y)
-        f.stamp()
-        spiller = 2
-        hvem_sin_tur(2)
-    else:
-        f.color("green")
-        f.setpos(rute_x, rute_y)
-        f.stamp()
-        spiller = 1
-        hvem_sin_tur(1)
-
-
-
 # Init graphics and logics
 tegne_grid()
 tegne_rutenummer()
 
+# -------- endret for å hent både spiller og neste spiller ---- raglew
 spiller, neste_spiller = hvem_starter()
-print('spiller, neste spiller', spiller, neste_spiller)
+print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
+hvem_sin_tur(spiller)
+
+
 # --- Main game ----
 
+# Spilleren plasserer sirkel i rute
+# --- Metode 1: Spilleren plasserer sirkel med museklikk ---
+s.onclick(plasser_stamp)
+# --- Metode 2: Eller spilleren kan plassere med tastetrykk ----
 s.onkey(tegn_stamp1, ("1")) 
 s.onkey(tegn_stamp2, ("2"))
 s.onkey(tegn_stamp3, ("3"))
@@ -241,24 +280,7 @@ s.onkey(tegn_stamp8, ("8"))
 s.onkey(tegn_stamp9, ("9"))
 s.listen()
 
-hvem_sin_tur(spiller)
 
 s.mainloop()
 
 
-# 2. Spiller 1 plassere
-# 3. Spiller 2 plassere
-# 4. Inn til en av spillene winner
-
-# Disse funksjonene må være med for at programmet skal fungere.
-
-
-"""
-    Session 
-    22:05
-    - Lagt til funksjoner til tastene 1-9 som tegner en sirkel i 
-     rute 1 - 9. 
-    - Lagt til midtrute = {} med koordinatene til midtpunktet i alle rutene.
-    - Endret inndelingen av vinduet fra 1/3-deler til 1/5 deler.
-
-"""
