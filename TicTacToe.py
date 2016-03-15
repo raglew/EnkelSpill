@@ -130,7 +130,7 @@ def tegne_rutenummer():
             liste_counter += 1
     
 
-def hvem_starter():
+def hvem_starter(player, nexplayer):
     """  Her bruker vi biblioteket random, og funksjonen
           random.randrange() til å generere et tilfeldig tall
            som enten er 1 eller 2, for å bestemme hvilken spiller 
@@ -146,13 +146,13 @@ def hvem_starter():
 
     player = random.randrange(1, 3)
     if player == 1:
-        next_player = 2
+        nexplayer = 2
         print("Spiller %s starter." % player)                               # debug data
     else:
         player = 2
-        next_player = 1
+        nexplayer = 1
         print("Spiller %s starter." % player)                               # debug data
-    return player, next_player
+    return player, nexplayer
 
 
 def hvem_sin_tur():
@@ -162,8 +162,6 @@ def hvem_sin_tur():
            som spillet uvikler seg. Annenhver gang skal den skrive 
             Spiller 1 og annenhver spiller 2.                   
     -------------------------------------------------- Jonas ----  """
-
-    # endret fra 't' turtle til 'i' turtle for å unngå mulige konflikt     ---- raglew
 
     # clear før neste 'hvem_sin_tur' skrives ut
     i.clear()
@@ -181,11 +179,7 @@ def hvem_sin_tur():
 def svitsj_spillere():
     # --------  funksjon for å svitsje spillere -----------------------  raglew
 
-    # endret funksjon til å bruke globale variabler   ----------  raglew
-    # og for å returnere til plasserings funksjon
-
     global spiller, neste_spiller, farge
-    print('før svitsj i fn', spiller, neste_spiller, f.color())         # debug data
     spiller, neste_spiller = neste_spiller, spiller
 
     # svitsj også figurfarge
@@ -197,8 +191,6 @@ def svitsj_spillere():
         f.color(farge)
     else:
         print('farge error')
-
-    print('etter svitsj i fn', spiller, neste_spiller, f.color())       # debug data
 
     # den svisjet spilleren kan nå plassere
     hvem_sin_tur()
@@ -212,7 +204,6 @@ def plasser_stamp_onclick(x, y):
              variabelen d, for hver løkke. Når "d" er liten nok, så 
        startes tegn_stamp() i den korresponderende ruten, og løkken brytes.
     ------------------------------------------ Raglew, Jonas --------- """
-    print(x, y)                                             # debug data
     for i in range(1,10):
         midt_x, midt_y = midtirute[i]
         # h = sqrt((x1-x2)^2 + (y1 - y2)^2)  Ref: Pytagoras
@@ -232,7 +223,6 @@ def tegn_stamp(rute):
     -------------------------------------------- Jonas ----- """
     global opptatt_rute
     if rute in opptatt_rute:                   # "Er ruten opptatt ?"
-        print("Ruten er allrede opptatt!")
         vis_opptatt(rute)
         return 0
     else:
@@ -287,7 +277,6 @@ def vinn_eller_uavgjort(rute):
     if counter == 9:                
         return 2
     else:
-        print("Ingen har vunnet enda!")                    # debug data
         return False
 
 
@@ -358,7 +347,6 @@ def avslutter():
     w.color(farge)
     spilleren = spillerne[spiller]
     andre_spilleren = spillerne[neste_spiller]
-    print(spilleren, andre_spilleren)                                                   # debug data
     w.write("{} & {}".format(spilleren, andre_spilleren), move=False, align="center",
             font=("Arial", 30, "bold"))
     w.setpos(0, -100)
@@ -379,7 +367,7 @@ def listen_clicks_keys():
     s.onkey(tast_stamp7, ("7"))
     s.onkey(tast_stamp8, ("8"))
     s.onkey(tast_stamp9, ("9"))
-    s.onkey(avslutter, 'space')
+    s.onkey(avslutter, 'space')       # ---  avslutter med <mellomrom>
     s.listen()
 
 
@@ -387,15 +375,12 @@ def hent_navner():
     # Hent navner fra spillerne
     spiller_navn = s.textinput("1ste Spiller", "Navn til den første spilleren:")
     neste_spiller_navn = s.textinput("2ndre Spiller", "Navn til den andre spilleren:")
+    # Endre små til stor bokstav
     spiller_navn = spiller_navn.upper()
     neste_spiller_navn = neste_spiller_navn.upper()
-
-    print(spiller_navn, neste_spiller_navn)                                 # debug data
-
+    # Legge navner til spillerne dictionary
     spillerne[1] = spiller_navn
     spillerne[2] = neste_spiller_navn
-
-    print(spillerne.items())
 
 
 def new_game():
@@ -418,7 +403,7 @@ def new_game():
     counter = 0
     # --- Init logics ---
 
-    spiller, neste_spiller = hvem_starter()
+    spiller, neste_spiller = hvem_starter(spiller, neste_spiller)
     if spiller == 1: 
         farge = "red"
     elif spiller == 2: 
@@ -432,6 +417,8 @@ def new_game():
     # --- Init event listening ---
     listen_clicks_keys()
 
+
+# MAIN
 hent_navner()
 new_game()
 s.mainloop()
