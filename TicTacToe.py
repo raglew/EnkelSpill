@@ -224,7 +224,7 @@ def tegn_stamp(rute):
     global opptatt_rute
     if rute in opptatt_rute:                   # "Er ruten opptatt ?"
         print("Ruten er allrede opptatt!")
-        tegn_opptatt(rute)
+        vis_opptatt(rute)
         return 0
     else:
         opptatt_rute.append(rute)              # "Denne ruten er nå opptatt"
@@ -233,12 +233,23 @@ def tegn_stamp(rute):
         f.setpos(midt_x, midt_y)
         f.color(farge)
         f.stamp()
-        if not vinn_eller_uavgjort(rute):      # Sjekker om noen har 3 på rad.
-            svitsj_spillere()
-        else:
-            tegn_victory()
-            new_game()                         # LAUNCHES NEW GAME!
-            return 0
+        checkif_gameover(rute)
+
+
+def checkif_gameover(rute):
+    """ Skjekker om spillet er over
+        # - If False: Spillet går videre
+        # - If True:  Noen har vunnet
+        # - Else:      Det ble uavgjort
+      ---------------------- Jonas --- """
+    if not vinn_eller_uavgjort(rute):
+        svitsj_spillere()
+    elif vinn_eller_uavgjort(rute):
+        vis_victory()
+        new_game()
+    else:
+        vis_uavgjort()
+        new_game()
             
 
 def vinn_eller_uavgjort(rute):
@@ -250,6 +261,7 @@ def vinn_eller_uavgjort(rute):
     ---------------------------------------Jonas--------"""
     global rutefarger, counter
     rutefarger[rute] = farge
+    counter += 1
     # Sjekk horisontale linjer                                               
     for i in [0, 3, 6]:
         if rutefarger[1+i] == rutefarger[2+i] == rutefarger[3+i]:
@@ -260,26 +272,36 @@ def vinn_eller_uavgjort(rute):
             return True
     # Skjekk Diagonal linjer
     for i in [0, 6]:
-        if rutefarger[1+i] == rutefarger[5] == rutefarger[9-i]:  
+        if rutefarger[1+i] == rutefarger[5] == rutefarger[9-i]:
             return True
+    # Dersom alle rutene er fulle
+    if counter == 9:                
+        return 2
     else:
         print("Ingen har vunnet enda!")                    # debug data
         return False
 
 
-def tegn_opptatt(rute):
+def vis_opptatt(rute):
     w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center", 
             font=("Arial", 40, "bold"))
     time.sleep(1.5)
     w.clear()
 
 
-def tegn_victory():
+def vis_victory():
     s.clear()
     w.color(farge)
     w.write("SPILLER %d HAR VUNNET!" % spiller, move=False, align="center", 
             font=("Arial", 40, "bold"))
-    print("Gratulerer spiller {0} !!".format(spiller))     # debug data
+    time.sleep(2)
+
+
+def vis_uavgjort():
+    s.clear()
+    w.color(farge)
+    w.write("DET BLE UAVJORT...", move=False, align="center", 
+            font=("Arial", 40, "bold"))
     time.sleep(2)
 
 
@@ -334,7 +356,12 @@ def listen_clicks_keys():
 
 
 def new_game():
-    global spiller, neste_spiller, opptatt_rute, rutefarger, farge
+	""" Den viktigste funksjonen av dem alle.
+		 Hovedoppgaven er å sørge for at utgangspunktet
+		  er helt likt hver gang et spill startes, slik 
+		   at resten av funksjonene fungerer som de skal.
+		   ------------------------------------------ """
+	global spiller, neste_spiller, opptatt_rute, rutefarger, farge, counter
     # --- Nullstille turtles ---
     t.reset()
     f.reset()
@@ -345,6 +372,7 @@ def new_game():
     rutefarger = {7: "farge7", 8: "farge8", 9: "farge9",
                   4: "farge4", 5: "farge5", 6: "farge6",
                   1: "farge1", 2: "farge2", 3: "farge3"}
+    counter = 0
     # --- Init logics ---
     spiller, neste_spiller =  hvem_starter()
     if spiller == 1: 
@@ -367,6 +395,5 @@ s.mainloop()
 
 """
 	Hva gjenstår?
-		Feature: Bestemme uavgjort, og vise det på skjermen.
 		Feture:  Poengsystem.
 """
