@@ -46,12 +46,13 @@ opptatt_rute = []
 rutefarger = {}
 spiller, neste_spiller = 0, 0
 farge = ""
+counter = 0
 
 
 # ----------------- FUNKSJONER --------------------------
 
 def init_turtles():
-    # ----------------- First turtle -------------
+    # ----------------- Graphics turtle -------------
     t.speed(8)
     t.ht()
     # -------------------init figur turtle  ------------  raglew
@@ -60,7 +61,7 @@ def init_turtles():
     f.shape('circle')                        # sirkel som test
     farge = 'red'                            # variabel som kan brukes i svitsj_spiller funksjon
     f.color(farge)                           # rød farge som test
-    f.turtlesize(3)
+    f.turtlesize(5)
     f.penup()
     # -------------------init instruks turtle ------------raglew
     i.ht()
@@ -227,16 +228,43 @@ def tegn_stamp(rute):
         return 0
     else:
         opptatt_rute.append(rute)              # "Denne ruten er nå opptatt"
+
         midt_x, midt_y = midtirute[rute]
-        
         f.setpos(midt_x, midt_y)
         f.color(farge)
         f.stamp()
-        if hvem_vinner(rute):
+        if not vinn_eller_uavgjort(rute):      # Sjekker om noen har 3 på rad.
+            svitsj_spillere()
+        else:
+            tegn_victory()
             new_game()                         # LAUNCHES NEW GAME!
             return 0
-        else:
-            svitsj_spillere()
+            
+
+def vinn_eller_uavgjort(rute):
+    """For å kåre vinner så lagrer vi hvilken spiller
+        som har skrevet i hvilken rute, i rutefarger = {.
+         Variabelen --> farge, representerer spilleren til en 
+          hver tid. Spiller1 = 'red', Spiller2 = 'green'
+           rute sendes videre fra tegn_stamp()
+    ---------------------------------------Jonas--------"""
+    global rutefarger, counter
+    rutefarger[rute] = farge
+    # Sjekk horisontale linjer                                               
+    for i in [0, 3, 6]:
+        if rutefarger[1+i] == rutefarger[2+i] == rutefarger[3+i]:
+            return True
+    # Skjekk Vertikal linjer
+    for i in [0, 1, 2]:
+        if rutefarger[1+i] == rutefarger[4+i] == rutefarger[7+i]:
+            return True
+    # Skjekk Diagonal linjer
+    for i in [0, 6]:
+        if rutefarger[1+i] == rutefarger[5] == rutefarger[9-i]:  
+            return True
+    else:
+        print("Ingen har vunnet enda!")                    # debug data
+        return False
 
 
 def tegn_opptatt(rute):
@@ -244,50 +272,9 @@ def tegn_opptatt(rute):
             font=("Arial", 40, "bold"))
     time.sleep(1.5)
     w.clear()
-    
 
-def hvem_vinner(rute):
-    """For å kåre vinner så lagrer vi hvilken spiller
-        som har skrevet i hvilken rute, i rutefarger = {.
-         Variabelen --> farge, representerer spilleren til en 
-          hver tid. Spiller1 = 'red', Spiller2 = 'green'
-           rute sendes videre fra tegn_stamp()
-    ---------------------------------------Jonas--------"""
-    global rutefarger
-    rutefarger[rute] = farge
-    # Horisontal                                                
-    if rutefarger[1] == rutefarger[2] == rutefarger[3]:     # Rute 1, 2, 3 er lik 
-        run_victory()
-        return True
-    elif rutefarger[4] == rutefarger[5] == rutefarger[6]:   # Rute 4, 5, 6 er lik
-        run_victory()
-        return True
-    elif rutefarger[7] == rutefarger[8] == rutefarger[9]:   # Rute 7, 8, 9 er lik
-        run_victory()
-        return True
-    # Vertikal
-    elif rutefarger[1] == rutefarger[4] == rutefarger[7]:   # Rute 1, 4, 7 er lik
-        run_victory()
-        return True
-    elif rutefarger[2] == rutefarger[5] == rutefarger[8]:   # Rute 2, 5, 8 er lik
-        run_victory()
-        return True
-    elif rutefarger[3] == rutefarger[6] == rutefarger[9]:   # Rute 3, 6, 9 er lik
-        run_victory()
-        return True
-    # Diagonal
-    elif rutefarger[1] == rutefarger[5] == rutefarger[9]:   # Rute 1, 5, 9 er lik
-        run_victory()
-        return True
-    elif rutefarger[7] == rutefarger[5] == rutefarger[3]:   # Rute 7, 5, 3 er lik
-        run_victory()
-        return True
-    else:
-        print("Ingen har vunnet enda!")                    # debug data
-        return False
 
-def run_victory():
-    time.sleep(1)
+def tegn_victory():
     s.clear()
     w.color(farge)
     w.write("SPILLER %d HAR VUNNET!" % spiller, move=False, align="center", 
@@ -295,43 +282,55 @@ def run_victory():
     print("Gratulerer spiller {0} !!".format(spiller))     # debug data
     time.sleep(2)
 
-    # --- Start over again ---
 
-
-def tegn_stamp1():
+def tast_stamp1():
     tegn_stamp(1)
 
 
-def tegn_stamp2():
+def tast_stamp2():
     tegn_stamp(2)
 
 
-def tegn_stamp3():
+def tast_stamp3():
     tegn_stamp(3)
 
 
-def tegn_stamp4():
+def tast_stamp4():
     tegn_stamp(4)
 
 
-def tegn_stamp5():
+def tast_stamp5():
     tegn_stamp(5)
 
 
-def tegn_stamp6():
+def tast_stamp6():
     tegn_stamp(6)
 
 
-def tegn_stamp7():
+def tast_stamp7():
     tegn_stamp(7)
 
 
-def tegn_stamp8():
+def tast_stamp8():
     tegn_stamp(8)
 
 
-def tegn_stamp9():  
+def tast_stamp9():  
     tegn_stamp(9)
+
+
+def listen_clicks_keys():
+    s.onclick(plasser_stamp_onclick) # --- Metode 1: Museklikk
+    s.onkey(tast_stamp1, ("1"))      # --- Metode 2: Num_pad
+    s.onkey(tast_stamp2, ("2"))         
+    s.onkey(tast_stamp3, ("3"))
+    s.onkey(tast_stamp4, ("4"))
+    s.onkey(tast_stamp5, ("5"))
+    s.onkey(tast_stamp6, ("6"))
+    s.onkey(tast_stamp7, ("7"))
+    s.onkey(tast_stamp8, ("8"))
+    s.onkey(tast_stamp9, ("9"))
+    s.listen()  
 
 
 def new_game():
@@ -352,27 +351,22 @@ def new_game():
         farge = "red"
     elif spiller == 2: 
         farge = "green"
-    print('spiller, neste spiller', spiller, neste_spiller)                       # debug data
-    print(farge)
     # --- Init turtles ---
     init_turtles()
     # --- Init graphics ---
     tegne_grid()
     tegne_rutenummer()
     hvem_sin_tur()
-    # --- Init clicks and keys ---
-    s.onclick(plasser_stamp_onclick) # --- Metode 1: Museklikk
-    s.onkey(tegn_stamp1, ("1"))      # --- Metode 2: Num_pad
-    s.onkey(tegn_stamp2, ("2"))         
-    s.onkey(tegn_stamp3, ("3"))
-    s.onkey(tegn_stamp4, ("4"))
-    s.onkey(tegn_stamp5, ("5"))
-    s.onkey(tegn_stamp6, ("6"))
-    s.onkey(tegn_stamp7, ("7"))
-    s.onkey(tegn_stamp8, ("8"))
-    s.onkey(tegn_stamp9, ("9"))
-    s.listen()       
+    # --- Init event listening ---
+    listen_clicks_keys()
 
 
 new_game()
 s.mainloop()
+
+
+"""
+	Hva gjenstår?
+		Feature: Bestemme uavgjort, og vise det på skjermen.
+		Feture:  Poengsystem.
+"""
