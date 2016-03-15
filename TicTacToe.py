@@ -44,8 +44,10 @@ midtirute = {   7 : [min_x + (3/10*win_w), min_y + (7/10*win_h)],
 # --------------- GLOBALE VARIABLER -------------------------------
 opptatt_rute = []
 rutefarger = {}
+spillerne = {}
 spiller, neste_spiller = 0, 0
 farge = ""
+spilleren = ""
 counter = 0
 
 
@@ -168,7 +170,8 @@ def hvem_sin_tur():
     # nyttig å bruke farge til gjeldene spiller :)
     i.color(farge)
     i.goto(min_x + (win_w * 0.5/10), max_y - (win_h * 1.2/10))
-    i.write("Spiller %d sin tur" % spiller, move=False, align="left",
+    spilleren = spillerne[spiller]
+    i.write("Din tur %s" % spilleren, move=False, align="left",
             font=("Arial", 20, "bold"))
     # - Added big circle in right corner
     i.goto(max_x - (win_w * 1/10), max_y - (win_h * 1/10))
@@ -298,7 +301,8 @@ def vis_opptatt(rute):
 def vis_victory():
     s.clear()
     w.color(farge)
-    w.write("SPILLER %d HAR VUNNET!" % spiller, move=False, align="center", 
+    spilleren = spillerne[spiller]
+    w.write("%s har VUNNET!" % spilleren, move=False, align="center",
             font=("Arial", 40, "bold"))
     time.sleep(2)
 
@@ -352,9 +356,15 @@ def avslutter():
     time.sleep(0.5)
     s.clear()
     w.color(farge)
-    w.write("Hadet", move=False, align="center",
-            font=("Arial", 40, "bold"))
-    time.sleep(2)
+    spilleren = spillerne[spiller]
+    andre_spilleren = spillerne[neste_spiller]
+    print(spilleren, andre_spilleren)                                                   # debug data
+    w.write("{} & {}".format(spilleren, andre_spilleren), move=False, align="center",
+            font=("Arial", 30, "bold"))
+    w.setpos(0, -100)
+    w.write("Hade på bade din gamle sjokolade".format(spilleren, andre_spilleren), move=False, align="center",
+            font=("Arial", 30, "bold"))
+    time.sleep(3)
     s.bye()
 
 
@@ -371,6 +381,21 @@ def listen_clicks_keys():
     s.onkey(tast_stamp9, ("9"))
     s.onkey(avslutter, 'space')
     s.listen()
+
+
+def hent_navner():
+    # Hent navner fra spillerne
+    spiller_navn = s.textinput("1ste Spiller", "Navn til den første spilleren:")
+    neste_spiller_navn = s.textinput("2ndre Spiller", "Navn til den andre spilleren:")
+    spiller_navn = spiller_navn.upper()
+    neste_spiller_navn = neste_spiller_navn.upper()
+
+    print(spiller_navn, neste_spiller_navn)                                 # debug data
+
+    spillerne[1] = spiller_navn
+    spillerne[2] = neste_spiller_navn
+
+    print(spillerne.items())
 
 
 def new_game():
@@ -392,7 +417,8 @@ def new_game():
                   1: "farge1", 2: "farge2", 3: "farge3"}
     counter = 0
     # --- Init logics ---
-    spiller, neste_spiller =  hvem_starter()
+
+    spiller, neste_spiller = hvem_starter()
     if spiller == 1: 
         farge = "red"
     elif spiller == 2: 
@@ -406,7 +432,7 @@ def new_game():
     # --- Init event listening ---
     listen_clicks_keys()
 
-
+hent_navner()
 new_game()
 s.mainloop()
 
