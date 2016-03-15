@@ -356,12 +356,12 @@ def listen_clicks_keys():
 
 
 def new_game():
-	""" Den viktigste funksjonen av dem alle.
-		 Hovedoppgaven er å sørge for at utgangspunktet
-		  er helt likt hver gang et spill startes, slik 
-		   at resten av funksjonene fungerer som de skal.
-		   ------------------------------------------ """
-	global spiller, neste_spiller, opptatt_rute, rutefarger, farge, counter
+    """ Den viktigste funksjonen av dem alle.
+         Hovedoppgaven er å sørge for at utgangspunktet
+          er helt likt hver gang et spill startes, slik
+           at resten av funksjonene fungerer som de skal.
+           ------------------------------------------ """
+    global spiller, neste_spiller, opptatt_rute, rutefarger, farge, counter
     # --- Nullstille turtles ---
     t.reset()
     f.reset()
@@ -394,6 +394,6 @@ s.mainloop()
 
 
 """
-	Hva gjenstår?
-		Feture:  Poengsystem.
+    Hva gjenstår?
+        Feture:  Poengsystem.
 """
