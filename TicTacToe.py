@@ -275,38 +275,45 @@ def tegn_stamp9():
     tegn_stamp(9)
 
 
+def new_game():
+    global spiller, neste_spiller, opptatt_rute, rutefarger, farge
+    # --- Nullstille turtles ---
+    t.reset()
+    f.reset()
+    i.reset()
+    w.reset()
+    # --- Nullstille variabler ---
+    opptatt_rute = []
+    rutefarger = {7: "farge7", 8: "farge8", 9: "farge9",
+                  4: "farge4", 5: "farge5", 6: "farge6",
+                  1: "farge1", 2: "farge2", 3: "farge3"}
+    # --- Init logics ---
+    spiller, neste_spiller =  hvem_starter()
+    if spiller == 1: 
+        farge = "red"
+    elif spiller == 2: 
+        farge = "green"
+    print('spiller, neste spiller', spiller, neste_spiller)                       # debug data
+    print(farge)
+    # --- Init turtles ---
+    init_turtles()
+    # --- Init graphics ---
+    tegne_grid()
+    tegne_rutenummer()
+    hvem_sin_tur()
+    # --- Init clicks and keys ---
+    s.onclick(plasser_stamp_onclick) # --- Metode 1: Museklikk
+    s.onkey(tegn_stamp1, ("1"))      # --- Metode 2: Num_pad
+    s.onkey(tegn_stamp2, ("2"))         
+    s.onkey(tegn_stamp3, ("3"))
+    s.onkey(tegn_stamp4, ("4"))
+    s.onkey(tegn_stamp5, ("5"))
+    s.onkey(tegn_stamp6, ("6"))
+    s.onkey(tegn_stamp7, ("7"))
+    s.onkey(tegn_stamp8, ("8"))
+    s.onkey(tegn_stamp9, ("9"))
+    s.listen()       
 
-# --- Init graphics ---
-tegne_grid()
-tegne_rutenummer()
 
-# --- Init logics ---
-spiller, neste_spiller = hvem_starter()
-print('spiller, neste spiller', spiller, neste_spiller)                                          # debug data
-hvem_sin_tur(spiller)
-
-# ---------- Plassering av f.stamp() i en bestemt rute --------
-# --- Metode 1: Spilleren plasserer f.stamp() med museklikk ---
-s.onclick(plasser_stamp_onclick)
-# --- Metode 2: Eller spilleren f.stamp()-er med tastetrykk ----
-s.onkey(tegn_stamp1, ("1")) 
-s.onkey(tegn_stamp2, ("2"))
-s.onkey(tegn_stamp3, ("3"))
-s.onkey(tegn_stamp4, ("4"))
-s.onkey(tegn_stamp5, ("5"))
-s.onkey(tegn_stamp6, ("6"))
-s.onkey(tegn_stamp7, ("7"))
-s.onkey(tegn_stamp8, ("8"))
-s.onkey(tegn_stamp9, ("9"))
-s.listen()
-
-"""
-    Det som mangler er: 
-    1.  Logikken for å kåre en vinner.
-    2.  Grafikken for å vise hvem som vinner.
-    3.  En måte å kunne starte spillet på nytt.
-    4.  (Optional) Gjøre det mulig å skrive inn sitt eget navn,
-       istedet for å player 1 og player 2.
-"""
-
+new_game()
 s.mainloop()
