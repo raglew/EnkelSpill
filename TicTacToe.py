@@ -101,6 +101,12 @@ def tegne_grid():
     t.pendown()
     t.forward(3/5*win_w)
 
+    # Instruks om hvordan man avslutter spillet
+    t.penup()
+    t.setpos(0, -250)
+    t.write("Avslutter? Tast <mellomrom>.", move=False, align="center",
+            font=("Arial", 15, "bold"))
+
 
 def tegne_rutenummer():
     """ Her skal vi tilegne hver rute i spillet et tall.
@@ -341,6 +347,17 @@ def tast_stamp9():
     tegn_stamp(9)
 
 
+def avslutter():
+    # Avslutter spillet
+    time.sleep(0.5)
+    s.clear()
+    w.color(farge)
+    w.write("Hadet", move=False, align="center",
+            font=("Arial", 40, "bold"))
+    time.sleep(2)
+    s.bye()
+
+
 def listen_clicks_keys():
     s.onclick(plasser_stamp_onclick) # --- Metode 1: Museklikk
     s.onkey(tast_stamp1, ("1"))      # --- Metode 2: Num_pad
@@ -352,7 +369,8 @@ def listen_clicks_keys():
     s.onkey(tast_stamp7, ("7"))
     s.onkey(tast_stamp8, ("8"))
     s.onkey(tast_stamp9, ("9"))
-    s.listen()  
+    s.onkey(avslutter, 'space')
+    s.listen()
 
 
 def new_game():
