@@ -99,6 +99,17 @@ def init_turtles():
     p2.showturtle()
     p2.width(2)
 
+
+def reset_turtles():
+	# --- Nullstille turtles ---
+    t.reset()
+    f.reset()
+    i.reset()
+    w.reset()
+    p1.reset()
+    p2.reset()
+
+
 def tegne_grid():
     # --- Tegner TicTacToe-streker med relative koordinater ---
     t.penup()
@@ -324,8 +335,8 @@ def vis_opptatt(rute):
 
 def vis_victory():
 	""" Kjøres dersom vinn_eller_uavgjort() -> return True"""
+	reset_turtles()
 	gi_poeng()
-	s.clear()
 	w.color(farge)
 	spilleren = spillerne[spiller]
 	w.write("%s har VUNNET!" % spilleren, move=False, align="center",
@@ -335,7 +346,7 @@ def vis_victory():
 
 def vis_uavgjort():
 	""" Kjøres dersom vinn_eller_uavgjort() -> return 2"""
-	s.clear()
+	reset_turtles()
 	w.color(farge)
 	w.write("DET BLE UAVJORT...", move=False, align="center", 
 	        font=("Arial", 40, "bold"))
@@ -444,12 +455,7 @@ def new_game():
            ------------------------------------------ """
     global spiller, neste_spiller, opptatt_rute, rutefarger, farge, counter
     # --- Nullstille turtles ---
-    t.reset()
-    f.reset()
-    i.reset()
-    w.reset()
-    p1.reset()
-    p2.reset()
+    reset_turtles()
     # --- Nullstille variabler ---
     opptatt_rute = []
     rutefarger = {7: "farge7", 8: "farge8", 9: "farge9",
