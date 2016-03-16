@@ -16,7 +16,8 @@ s = Screen()
 f = Turtle()                     # f = figur, for å tegne figur etter spillerens klikk -- raglew
 i = Turtle()                     # i = instruks, for å endre instruks i hvem_sin_tur funksjon -- raglew
 w = Turtle()                     # w = warning, skriver warning dersom en rute er opptatt --Jonas 
-
+p1 = Turtle()                    # p1 = vise poengene til player 1
+p2 = Turtle()                    # p2 = vise poengene til player 2
 
 # ------------------  KONSTANTER   -------------------------------
 
@@ -49,14 +50,15 @@ spiller, neste_spiller = 0, 0
 farge = ""
 spilleren = ""
 counter = 0
-
+poeng1 = 0
+poeng2 = 0
 
 # ----------------- FUNKSJONER --------------------------
 
 def init_turtles():
     # ----------------- Graphics turtle -------------
     t.speed(8)
-    t.ht()
+    t.st()
     # -------------------init figur turtle  ------------  raglew
     f.ht()
     f.speed(0)
@@ -75,7 +77,26 @@ def init_turtles():
     w.ht()
     w.speed(0)
     w.color("Orange")
+    # -------- ----- init poeng turtles ------- Jonas
+    p1.ht()
+    p1.speed(0)
+    p1.penup()
+    p1.goto(min_x + (0.68/10*win_w), min_y + (5.98/10*win_h))
+    p1.seth(90)
+    p1.color("red")
+    p1.pendown()
+    p1.showturtle()
+    p1.width(2)
 
+    p2.ht()
+    p2.speed(0)
+    p2.penup()
+    p2.goto(min_x + (0.68/10*win_w), min_y + (3.98/10*win_h))
+    p2.seth(90)
+    p2.color("green")
+    p2.pendown()
+    p2.showturtle()
+    p2.width(2)
 
 def tegne_grid():
     # --- Tegner TicTacToe-streker med relative koordinater ---
@@ -105,9 +126,18 @@ def tegne_grid():
 
     # Instruks om hvordan man avslutter spillet
     t.penup()
-    t.setpos(0, -250)
-    t.write("Avslutter? Tast <mellomrom>.", move=False, align="center",
+    t.setpos(0, min_y + (1/10*win_h))
+    t.write("Avslutte?   <mellomrom>", move=False, align="center",
             font=("Arial", 15, "bold"))
+
+    # Tegner poeng
+    t.goto(min_x + (1/10*win_w), min_y + (5.75/10*win_h))
+    t.write(poeng1, move=False, align="center", 
+            font=("Arial", 20, "normal"))
+    t.goto(min_x + (1/10*win_w), min_y + (3.75/10*win_h))
+    t.write(poeng2, move=False, align="center", 
+            font=("Arial", 20, "normal"))
+
 
 
 def tegne_rutenummer():
@@ -128,6 +158,7 @@ def tegne_rutenummer():
             t.write(liste[liste_counter], move=False, align="center",
                     font=("Arial", 6, "bold"))
             liste_counter += 1
+    t.ht()
     
 
 def hvem_starter(player, nexplayer):
@@ -244,8 +275,8 @@ def checkif_gameover(rute):
     if not vinn_eller_uavgjort(rute):
         svitsj_spillere()
     elif vinn_eller_uavgjort(rute):
-        vis_victory()
-        new_game()
+	    vis_victory()
+	    new_game()
     else:
         vis_uavgjort()
         new_game()
@@ -281,27 +312,42 @@ def vinn_eller_uavgjort(rute):
 
 
 def vis_opptatt(rute):
-    w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center", 
-            font=("Arial", 40, "bold"))
-    time.sleep(1.5)
-    w.clear()
+	""" Kjøres dersom ruten som blir forsøkt skrevet til i 
+	     tegn_stamp(), allerede er registrert i listen opptatt_rute = []"""
+
+	w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center", 
+		     font=("Arial", 40, "bold"))
+	time.sleep(1.5)
+	w.clear()
 
 
 def vis_victory():
-    s.clear()
-    w.color(farge)
-    spilleren = spillerne[spiller]
-    w.write("%s har VUNNET!" % spilleren, move=False, align="center",
-            font=("Arial", 40, "bold"))
-    time.sleep(2)
+	""" Kjøres dersom vinn_eller_uavgjort() -> return True"""
+	gi_poeng()
+	s.clear()
+	w.color(farge)
+	spilleren = spillerne[spiller]
+	w.write("%s har VUNNET!" % spilleren, move=False, align="center",
+	        font=("Arial", 40, "bold"))
+	time.sleep(2)
 
 
 def vis_uavgjort():
-    s.clear()
-    w.color(farge)
-    w.write("DET BLE UAVJORT...", move=False, align="center", 
-            font=("Arial", 40, "bold"))
-    time.sleep(2)
+	""" Kjøres dersom vinn_eller_uavgjort() -> return 2"""
+	s.clear()
+	w.color(farge)
+	w.write("DET BLE UAVJORT...", move=False, align="center", 
+	        font=("Arial", 40, "bold"))
+	time.sleep(2)
+
+
+def gi_poeng():
+	""" Kjøres når funksjonen vis_victory() kjøres"""
+	global poeng1, poeng2
+	if spiller == 1: 
+		poeng1 += 1
+	elif spiller == 2: 
+		poeng2 += 1
 
 
 def tast_stamp1():
@@ -349,7 +395,7 @@ def avslutter():
     andre_spilleren = spillerne[neste_spiller]
     w.write("{} & {}".format(spilleren, andre_spilleren), move=False, align="center",
             font=("Arial", 30, "bold"))
-    w.setpos(0, -100)
+    w.setpos(0, min_y + (1/3*win_h))
     w.write("Hade på bade din gamle sjokolade".format(spilleren, andre_spilleren), move=False, align="center",
             font=("Arial", 30, "bold"))
     time.sleep(3)
@@ -371,7 +417,7 @@ def listen_clicks_keys():
     s.listen()
 
 
-def hent_navner():
+def hent_navn():
     # Hent navner fra spillerne
     spiller_navn = s.textinput("1ste Spiller", "Navn til den første spilleren:")
     neste_spiller_navn = s.textinput("2ndre Spiller", "Navn til den andre spilleren:")
@@ -382,6 +428,11 @@ def hent_navner():
     spillerne[1] = spiller_navn
     spillerne[2] = neste_spiller_navn
 
+
+def while_game():
+    while True:
+    	p1.circle(-30, 5)
+    	p2.circle(-30, 5)
 
 def new_game():
     """ Den viktigste funksjonen av dem alle.
@@ -395,6 +446,8 @@ def new_game():
     f.reset()
     i.reset()
     w.reset()
+    p1.reset()
+    p2.reset()
     # --- Nullstille variabler ---
     opptatt_rute = []
     rutefarger = {7: "farge7", 8: "farge8", 9: "farge9",
@@ -402,7 +455,6 @@ def new_game():
                   1: "farge1", 2: "farge2", 3: "farge3"}
     counter = 0
     # --- Init logics ---
-
     spiller, neste_spiller = hvem_starter(spiller, neste_spiller)
     if spiller == 1: 
         farge = "red"
@@ -416,15 +468,17 @@ def new_game():
     hvem_sin_tur()
     # --- Init event listening ---
     listen_clicks_keys()
-
+    # --- While loop ---
+    while_game()
 
 # MAIN
-hent_navner()
+hent_navn()
 new_game()
+
 s.mainloop()
 
 
 """
-    Hva gjenstår?
-        Feture:  Poengsystem.
+    Issue: Turtles forsvinner når new_game() startes for 2. gang.
+          + de tegnes ikke skikkelig.
 """
