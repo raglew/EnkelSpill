@@ -7,6 +7,7 @@
 
 
 from turtle import *
+import vlc
 import random
 import time
 
@@ -430,6 +431,7 @@ def hent_navn():
 
 
 def while_game():
+    """ Cool animation """
     while True:
     	p1.circle(-30, 5)
     	p2.circle(-30, 5)
@@ -473,6 +475,8 @@ def new_game():
 
 # MAIN
 hent_navn()
+p = vlc.MediaPlayer("Hot_Butter-Popcorn.mp3")
+p.play()
 new_game()
 
 s.mainloop()
