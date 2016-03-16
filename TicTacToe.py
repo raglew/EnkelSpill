@@ -7,7 +7,7 @@
 
 
 from turtle import *
-import vlc
+# import vlc
 import random
 import time
 
@@ -276,8 +276,8 @@ def checkif_gameover(rute):
     if not vinn_eller_uavgjort(rute):
         svitsj_spillere()
     elif vinn_eller_uavgjort(rute):
-	    vis_victory()
-	    new_game()
+        vis_victory()
+        new_game()
     else:
         vis_uavgjort()
         new_game()
@@ -475,8 +475,8 @@ def new_game():
 
 # MAIN
 hent_navn()
-p = vlc.MediaPlayer("Hot_Butter-Popcorn.mp3")
-p.play()
+# p = vlc.MediaPlayer("Hot_Butter-Popcorn.mp3")
+# p.play()
 new_game()
 
 s.mainloop()
@@ -485,4 +485,6 @@ s.mainloop()
 """
     Issue: Turtles forsvinner når new_game() startes for 2. gang.
           + de tegnes ikke skikkelig.
+
+    Løsningen for nå: Unngå å bruke VLC biblioteket. Det er den som får programmet til å kræsje når man skal spille lyd / musikk.
 """
