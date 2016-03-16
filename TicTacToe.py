@@ -103,11 +103,17 @@ def init_turtles():
 def reset_turtles():
 	# --- Nullstille turtles ---
     t.reset()
+    t.ht()
     f.reset()
+    f.ht()
     i.reset()
+    i.ht()
     w.reset()
+    w.ht()
     p1.reset()
+    p1.ht()
     p2.reset()
+    p2.ht()
 
 
 def tegne_grid():
