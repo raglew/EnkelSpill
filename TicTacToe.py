@@ -101,7 +101,7 @@ def init_turtles():
 
 
 def reset_turtles():
-	# --- Nullstille turtles ---
+    # --- Nullstille turtles ---
     t.reset()
     t.ht()
     f.reset()
@@ -330,78 +330,42 @@ def vinn_eller_uavgjort(rute):
 
 
 def vis_opptatt(rute):
-	""" Kjøres dersom ruten som blir forsøkt skrevet til i 
-	     tegn_stamp(), allerede er registrert i listen opptatt_rute = []"""
+    """ Kjøres dersom ruten som blir forsøkt skrevet til i
+         tegn_stamp(), allerede er registrert i listen opptatt_rute = []"""
 
-	w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center", 
-		     font=("Arial", 40, "bold"))
-	time.sleep(1.5)
-	w.clear()
+    w.write("RUTE %d ER OPPTATT" % rute, move=False, align="center",
+             font=("Arial", 40, "bold"))
+    time.sleep(1.5)
+    w.clear()
 
 
 def vis_victory():
-	""" Kjøres dersom vinn_eller_uavgjort() -> return True"""
-	reset_turtles()
-	gi_poeng()
-	w.color(farge)
-	spilleren = spillerne[spiller]
-	w.write("%s har VUNNET!" % spilleren, move=False, align="center",
-	        font=("Arial", 40, "bold"))
-	time.sleep(2)
+    """ Kjøres dersom vinn_eller_uavgjort() -> return True"""
+    reset_turtles()
+    gi_poeng()
+    w.color(farge)
+    spilleren = spillerne[spiller]
+    w.write("%s har VUNNET!" % spilleren, move=False, align="center",
+            font=("Arial", 40, "bold"))
+    time.sleep(2)
 
 
 def vis_uavgjort():
-	""" Kjøres dersom vinn_eller_uavgjort() -> return 2"""
-	reset_turtles()
-	w.color(farge)
-	w.write("DET BLE UAVJORT...", move=False, align="center", 
-	        font=("Arial", 40, "bold"))
-	time.sleep(2)
+    """ Kjøres dersom vinn_eller_uavgjort() -> return 2"""
+    reset_turtles()
+    w.color(farge)
+    w.write("DET BLE UAVJORT...", move=False, align="center",
+            font=("Arial", 40, "bold"))
+    time.sleep(2)
 
 
 def gi_poeng():
-	""" Kjøres når funksjonen vis_victory() kjøres"""
-	global poeng1, poeng2
-	if spiller == 1: 
-		poeng1 += 1
-	elif spiller == 2: 
-		poeng2 += 1
-
-
-def tast_stamp1():
-    tegn_stamp(1)
-
-
-def tast_stamp2():
-    tegn_stamp(2)
-
-
-def tast_stamp3():
-    tegn_stamp(3)
-
-
-def tast_stamp4():
-    tegn_stamp(4)
-
-
-def tast_stamp5():
-    tegn_stamp(5)
-
-
-def tast_stamp6():
-    tegn_stamp(6)
-
-
-def tast_stamp7():
-    tegn_stamp(7)
-
-
-def tast_stamp8():
-    tegn_stamp(8)
-
-
-def tast_stamp9():  
-    tegn_stamp(9)
+    """ Kjøres når funksjonen vis_victory() kjøres"""
+    global poeng1, poeng2
+    if spiller == 1:
+        poeng1 += 1
+    elif spiller == 2:
+        poeng2 += 1
 
 
 def avslutter():
@@ -420,17 +384,27 @@ def avslutter():
     s.bye()
 
 
+def test_stamp_pick(tast):
+	""" Denne funksjonen har fjernet 9 funksjoner. Basically så
+	     sørger den for å gi parameteren -> tast, til en funksjon
+	      som ikke kan ta i mot parametere i utganspunktet.
+	       --------------------------------- Jonas --------- """
+    def tast_stamp():
+        tegn_stamp(tast)
+    return tast_stamp
+
+
 def listen_clicks_keys():
     s.onclick(plasser_stamp_onclick) # --- Metode 1: Museklikk
-    s.onkey(tast_stamp1, ("1"))      # --- Metode 2: Num_pad
-    s.onkey(tast_stamp2, ("2"))         
-    s.onkey(tast_stamp3, ("3"))
-    s.onkey(tast_stamp4, ("4"))
-    s.onkey(tast_stamp5, ("5"))
-    s.onkey(tast_stamp6, ("6"))
-    s.onkey(tast_stamp7, ("7"))
-    s.onkey(tast_stamp8, ("8"))
-    s.onkey(tast_stamp9, ("9"))
+    s.onkey(test_stamp_pick(1), ("1"))      # --- Metode 2: Num_pad
+    s.onkey(test_stamp_pick(2), ("2"))
+    s.onkey(test_stamp_pick(3), ("3"))
+    s.onkey(test_stamp_pick(4), ("4"))
+    s.onkey(test_stamp_pick(5), ("5"))
+    s.onkey(test_stamp_pick(6), ("6"))
+    s.onkey(test_stamp_pick(7), ("7"))
+    s.onkey(test_stamp_pick(8), ("8"))
+    s.onkey(test_stamp_pick(9), ("9"))
     s.onkey(avslutter, 'space')       # ---  avslutter med <mellomrom>
     s.listen()
 
