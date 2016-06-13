@@ -1,4 +1,5 @@
-# EnkelSpill
-En enkel Python Turtle Spill
+TicTacToe
 
-Vi må vel designe spillet først?
+Used Python 3 and Turtle
+
+
