@@ -385,10 +385,10 @@ def avslutter():
 
 
 def test_stamp_pick(tast):
-	""" Denne funksjonen har fjernet 9 funksjoner. Basically så
-	     sørger den for å gi parameteren -> tast, til en funksjon
-	      som ikke kan ta i mot parametere i utganspunktet.
-	       --------------------------------- Jonas --------- """
+    """ Denne funksjonen har fjernet 9 funksjoner. Basically så
+    sørger den for å gi parameteren -> tast, til en funksjon
+    som ikke kan ta i mot parametere i utganspunktet.
+    --------------------------------- Jonas --------- """
     def tast_stamp():
         tegn_stamp(tast)
     return tast_stamp
