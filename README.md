@@ -1,5 +1,5 @@
-TicTacToe
+<H1> TicTacToe </H1>
 
-Used Python 3 and Turtle
+Created using Python 3 & Turtle
 
 
